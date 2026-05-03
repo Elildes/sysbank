@@ -22,6 +22,11 @@ public class ContaService {
 		contas.put(numero, new Conta(numero));
 	}
 
+	// Issue #3 - Consultar Saldo
+	public double consultarSaldo(int numero) throws ContaException {
+		return buscarConta(numero).getSaldo();
+	}
+
 	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {
 		Conta conta = contas.get(numero);

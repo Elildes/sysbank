@@ -31,4 +31,18 @@ class ContaServiceTest {
 		service.cadastrarConta(1001);
 		assertThrows(ContaException.class, () -> service.cadastrarConta(1001));
 	}
+
+	// Issue #3 - Consultar Saldo
+	@Test
+	@DisplayName("#3 Deve consultar saldo de conta existente")
+	void deveConsultarSaldo() throws ContaException {
+		service.cadastrarConta(2001);
+		assertEquals(0.0, service.consultarSaldo(2001));
+	}
+
+	@Test
+	@DisplayName("#3 Deve lancar excecao ao consultar conta inexistente")
+	void deveLancarExcecaoContaInexistenteNaConsulta() {
+		assertThrows(ContaException.class, () -> service.consultarSaldo(9999));
+	}
 }

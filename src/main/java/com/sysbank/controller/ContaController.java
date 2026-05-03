@@ -20,4 +20,14 @@ public class ContaController {
 			return "✘ Erro: " + e.getMessage();
 		}
 	}
+
+	// Issue #3 - Consultar Saldo
+	public String consultarSaldo(int numero) {
+		try {
+			double saldo = contaService.consultarSaldo(numero);
+			return String.format("✔ Conta %d | Saldo: R$ %.2f", numero, saldo);
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}
 }
