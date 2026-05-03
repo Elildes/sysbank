@@ -76,4 +76,35 @@ class ContaServiceTest {
 	void deveLancarExcecaoCreditoContaInexistente() {
 		assertThrows(ContaException.class, () -> service.credito(9999, 100.0));
 	}
+	
+	// Issue #5 - Débito
+    @Test
+    @DisplayName("#5 Deve debitar valor corretamente")
+    void deveDebitarValor() throws ContaException {
+        service.cadastrarConta(4001);
+        service.credito(4001, 300.0);
+        service.debito(4001, 100.0);
+        assertEquals(200.0, service.consultarSaldo(4001));
+    }
+
+    @Test
+    @DisplayName("#5 Deve permitir saldo negativo apos debito")
+    void devePermitirSaldoNegativo() throws ContaException {
+        service.cadastrarConta(4002);
+        service.debito(4002, 50.0);
+        assertEquals(-50.0, service.consultarSaldo(4002));
+    }
+
+    @Test
+    @DisplayName("#5 Deve lancar excecao ao debitar valor negativo")
+    void deveLancarExcecaoValorNegativoNoDebito() throws ContaException {
+        service.cadastrarConta(4003);
+        assertThrows(ContaException.class, () -> service.debito(4003, -10.0));
+    }
+
+    @Test
+    @DisplayName("#5 Deve lancar excecao ao debitar em conta inexistente")
+    void deveLancarExcecaoDebitoContaInexistente() {
+        assertThrows(ContaException.class, () -> service.debito(9999, 100.0));
+    }
 }
