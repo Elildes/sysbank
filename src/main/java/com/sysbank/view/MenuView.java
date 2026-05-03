@@ -30,7 +30,7 @@ public class MenuView {
 
 			switch (opcao) {
 			case 1 -> fluxoCadastrarConta();
-			case 2 -> System.out.println("Funcionalidade em desenvolvimento.");
+			case 2 -> fluxoConsultarSaldo();
 			case 3 -> System.out.println("Funcionalidade em desenvolvimento.");
 			case 4 -> System.out.println("Funcionalidade em desenvolvimento.");
 			case 5 -> System.out.println("Funcionalidade em desenvolvimento.");
@@ -59,6 +59,12 @@ public class MenuView {
 		System.out.println("--- Cadastrar Conta ---");
 		int numero = lerInteiro("Numero da conta");
 		System.out.println(controller.cadastrarConta(numero));
+	}
+
+	private void fluxoConsultarSaldo() {
+		System.out.println("--- Consultar Saldo ---");
+		int numero = lerInteiro("Numero da conta");
+		System.out.println(controller.consultarSaldo(numero));
 	}
 
 	private int lerInteiro(String campo) {
