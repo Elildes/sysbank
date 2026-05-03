@@ -33,6 +33,13 @@ public class ContaService {
 		Conta conta = buscarConta(numero);
 		conta.setSaldo(conta.getSaldo() + valor);
 	}
+	
+	// Issue #5 - Débito (saldo negativo permitido)
+	public void debito(int numero, double valor) throws ContaException {
+		validarValor(valor);
+		Conta conta = buscarConta(numero);
+		conta.setSaldo(conta.getSaldo() - valor);
+	}
 
 	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {
