@@ -30,4 +30,15 @@ public class ContaController {
 			return "✘ Erro: " + e.getMessage();
 		}
 	}
+
+	// Issue #4 - Crédito
+	public String credito(int numero, double valor) {
+		try {
+			contaService.credito(numero, valor);
+			double novoSaldo = contaService.consultarSaldo(numero);
+			return String.format("✔ Credito de R$ %.2f na conta %d | Novo saldo: R$ %.2f", valor, numero, novoSaldo);
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}
 }

@@ -45,4 +45,35 @@ class ContaServiceTest {
 	void deveLancarExcecaoContaInexistenteNaConsulta() {
 		assertThrows(ContaException.class, () -> service.consultarSaldo(9999));
 	}
+
+	// Issue #4 - Crédito
+	@Test
+	@DisplayName("#4 Deve creditar valor corretamente")
+	void deveCreditarValor() throws ContaException {
+		service.cadastrarConta(3001);
+		service.credito(3001, 200.0);
+		assertEquals(200.0, service.consultarSaldo(3001));
+	}
+
+	@Test
+	@DisplayName("#4 Credito acumulado deve somar corretamente")
+	void deveCreditarAcumulado() throws ContaException {
+		service.cadastrarConta(3002);
+		service.credito(3002, 100.0);
+		service.credito(3002, 50.0);
+		assertEquals(150.0, service.consultarSaldo(3002));
+	}
+
+	@Test
+	@DisplayName("#4 Deve lancar excecao ao creditar valor negativo")
+	void deveLancarExcecaoValorNegativoNoCredito() throws ContaException {
+		service.cadastrarConta(3003);
+		assertThrows(ContaException.class, () -> service.credito(3003, -50.0));
+	}
+
+	@Test
+	@DisplayName("#4 Deve lancar excecao ao creditar em conta inexistente")
+	void deveLancarExcecaoCreditoContaInexistente() {
+		assertThrows(ContaException.class, () -> service.credito(9999, 100.0));
+	}
 }

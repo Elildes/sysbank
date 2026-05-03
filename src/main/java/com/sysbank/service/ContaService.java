@@ -27,6 +27,13 @@ public class ContaService {
 		return buscarConta(numero).getSaldo();
 	}
 
+	// Issue #4 - Crédito
+	public void credito(int numero, double valor) throws ContaException {
+		validarValor(valor);
+		Conta conta = buscarConta(numero);
+		conta.setSaldo(conta.getSaldo() + valor);
+	}
+
 	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {
 		Conta conta = contas.get(numero);
@@ -34,5 +41,11 @@ public class ContaService {
 			throw new ContaException("Conta " + numero + " não encontrada.");
 		}
 		return conta;
+	}
+
+	private void validarValor(double valor) throws ContaException {
+		if (valor <= 0) {
+			throw new ContaException("O valor da operação deve ser positivo.");
+		}
 	}
 }
