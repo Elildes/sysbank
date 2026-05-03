@@ -104,7 +104,7 @@ public class MenuView {
 				return valor;
 			} catch (InputMismatchException e) {
 				scanner.nextLine();
-				System.out.println("  ✘ Entrada invalida. Informe um valor numerico (ex: 150.00).");
+				System.out.println("  ✘ Entrada invalida. Informe um valor numerico (ex: 150,00).");
 			}
 		}
 	}
