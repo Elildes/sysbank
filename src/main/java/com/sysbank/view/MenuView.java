@@ -32,7 +32,7 @@ public class MenuView {
 			case 1 -> fluxoCadastrarConta();
 			case 2 -> fluxoConsultarSaldo();
 			case 3 -> fluxoCredito();
-			case 4 -> System.out.println("Funcionalidade em desenvolvimento.");
+			case 4 -> fluxoDebito();
 			case 5 -> System.out.println("Funcionalidade em desenvolvimento.");
 			case 0 -> {
 				executando = false;
@@ -72,6 +72,13 @@ public class MenuView {
 		int numero = lerInteiro("Numero da conta");
 		double valor = lerDouble("Valor do credito");
 		System.out.println(controller.credito(numero, valor));
+	}
+	
+	private void fluxoDebito() {
+		System.out.println("--- Debito em Conta ---");
+		int numero = lerInteiro("Numero da conta");
+		double valor = lerDouble("Valor do debito");
+		System.out.println(controller.debito(numero, valor));
 	}
 
 	private int lerInteiro(String campo) {

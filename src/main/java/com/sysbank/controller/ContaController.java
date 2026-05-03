@@ -41,4 +41,16 @@ public class ContaController {
 			return "✘ Erro: " + e.getMessage();
 		}
 	}
+	
+	// Issue #5 - Débito
+	public String debito(int numero, double valor) {
+		try {
+			contaService.debito(numero, valor);
+			double novoSaldo = contaService.consultarSaldo(numero);
+			return String.format("✔ Debito de R$ %.2f na conta %d | Novo saldo: R$ %.2f",
+                    valor, numero, novoSaldo);
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}
 }
