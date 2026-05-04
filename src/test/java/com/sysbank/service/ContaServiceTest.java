@@ -107,4 +107,55 @@ class ContaServiceTest {
     void deveLancarExcecaoDebitoContaInexistente() {
         assertThrows(ContaException.class, () -> service.debito(9999, 100.0));
     }
+    
+ // Issue #6 - Transferência
+    @Test
+    @DisplayName("#6 Deve transferir valor entre contas corretamente")
+    void deveTransferirValor() throws ContaException {
+        service.cadastrarConta(5001);
+        service.cadastrarConta(5002);
+        service.credito(5001, 500.0);
+        service.transferencia(5001, 5002, 200.0);
+        assertEquals(300.0, service.consultarSaldo(5001));
+        assertEquals(200.0, service.consultarSaldo(5002));
+    }
+
+    @Test
+    @DisplayName("#6 Deve permitir saldo negativo na origem apos transferencia")
+    void devePermitirSaldoNegativoNaOrigem() throws ContaException {
+        service.cadastrarConta(5003);
+        service.cadastrarConta(5004);
+        service.transferencia(5003, 5004, 100.0);
+        assertEquals(-100.0, service.consultarSaldo(5003));
+        assertEquals(100.0,  service.consultarSaldo(5004));
+    }
+
+    @Test
+    @DisplayName("#6 Deve lancar excecao quando conta de origem nao existe")
+    void deveLancarExcecaoOrigemInexistente() throws ContaException {
+        service.cadastrarConta(5005);
+        assertThrows(ContaException.class, () -> service.transferencia(9999, 5005, 50.0));
+    }
+
+    @Test
+    @DisplayName("#6 Deve lancar excecao quando conta de destino nao existe")
+    void deveLancarExcecaoDestinoInexistente() throws ContaException {
+        service.cadastrarConta(5006);
+        assertThrows(ContaException.class, () -> service.transferencia(5006, 9999, 50.0));
+    }
+
+    @Test
+    @DisplayName("#6 Deve lancar excecao quando origem e destino sao iguais")
+    void deveLancarExcecaoOrigemIgualDestino() throws ContaException {
+        service.cadastrarConta(5007);
+        assertThrows(ContaException.class, () -> service.transferencia(5007, 5007, 50.0));
+    }
+
+    @Test
+    @DisplayName("#6 Deve lancar excecao ao transferir valor negativo")
+    void deveLancarExcecaoValorNegativoNaTransferencia() throws ContaException {
+        service.cadastrarConta(5008);
+        service.cadastrarConta(5009);
+        assertThrows(ContaException.class, () -> service.transferencia(5008, 5009, -10.0));
+    }
 }

@@ -33,7 +33,7 @@ public class MenuView {
 			case 2 -> fluxoConsultarSaldo();
 			case 3 -> fluxoCredito();
 			case 4 -> fluxoDebito();
-			case 5 -> System.out.println("Funcionalidade em desenvolvimento.");
+			case 5 -> fluxoTransferencia();
 			case 0 -> {
 				executando = false;
 				System.out.println("Encerrando. Ate logo!");
@@ -80,6 +80,14 @@ public class MenuView {
 		double valor = lerDouble("Valor do debito");
 		System.out.println(controller.debito(numero, valor));
 	}
+	
+	private void fluxoTransferencia() {
+        System.out.println("--- Transferencia entre Contas ---");
+        int origem  = lerInteiro("Numero da conta de origem");
+        int destino = lerInteiro("Numero da conta de destino");
+        double valor = lerDouble("Valor da transferencia");
+        System.out.println(controller.transferencia(origem, destino, valor));
+    }
 
 	private int lerInteiro(String campo) {
 		while (true) {

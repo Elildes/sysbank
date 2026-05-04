@@ -40,6 +40,18 @@ public class ContaService {
 		Conta conta = buscarConta(numero);
 		conta.setSaldo(conta.getSaldo() - valor);
 	}
+	
+	// Issue #6 - Transferência
+	public void transferencia(int numeroOrigem, int numeroDestino, double valor) throws ContaException {
+        validarValor(valor);
+        if (numeroOrigem == numeroDestino) {
+            throw new ContaException("Conta de origem e destino não podem ser iguais.");
+        }
+        Conta origem  = buscarConta(numeroOrigem);
+        Conta destino = buscarConta(numeroDestino);
+        origem.setSaldo(origem.getSaldo() - valor);
+        destino.setSaldo(destino.getSaldo() + valor);
+    }
 
 	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {

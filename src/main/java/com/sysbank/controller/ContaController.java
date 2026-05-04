@@ -53,4 +53,22 @@ public class ContaController {
 			return "✘ Erro: " + e.getMessage();
 		}
 	}
+	
+	// Issue #6 - Transferência
+    public String transferencia(int numeroOrigem, int numeroDestino, double valor) {
+        try {
+            contaService.transferencia(numeroOrigem, numeroDestino, valor);
+            double saldoOrigem  = contaService.consultarSaldo(numeroOrigem);
+            double saldoDestino = contaService.consultarSaldo(numeroDestino);
+            return String.format(
+                    "✔ Transferencia de R$ %.2f da conta %d para conta %d realizada.%n" +
+                    "   Conta %d | Novo saldo: R$ %.2f%n" +
+                    "   Conta %d | Novo saldo: R$ %.2f",
+                    valor, numeroOrigem, numeroDestino,
+                    numeroOrigem, saldoOrigem,
+                    numeroDestino, saldoDestino);
+        } catch (ContaException e) {
+            return "✘ Erro: " + e.getMessage();
+        }
+    }
 }
