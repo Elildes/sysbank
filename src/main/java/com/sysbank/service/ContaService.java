@@ -33,25 +33,33 @@ public class ContaService {
 		Conta conta = buscarConta(numero);
 		conta.setSaldo(conta.getSaldo() + valor);
 	}
-	
-	// Issue #5 - Débito (saldo negativo permitido)
+
+	// Issue #5 - Débito
+	// Bug #15: adicionada verificação de saldo insuficiente
 	public void debito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
+		if (conta.getSaldo() < valor) {
+			throw new ContaException("Saldo insuficiente para realizar o débito.");
+		}
 		conta.setSaldo(conta.getSaldo() - valor);
 	}
-	
+
 	// Issue #6 - Transferência
+	// Bug #15: adicionada verificação de saldo insuficiente na conta de origem
 	public void transferencia(int numeroOrigem, int numeroDestino, double valor) throws ContaException {
-        validarValor(valor);
-        if (numeroOrigem == numeroDestino) {
-            throw new ContaException("Conta de origem e destino não podem ser iguais.");
-        }
-        Conta origem  = buscarConta(numeroOrigem);
-        Conta destino = buscarConta(numeroDestino);
-        origem.setSaldo(origem.getSaldo() - valor);
-        destino.setSaldo(destino.getSaldo() + valor);
-    }
+		validarValor(valor);
+		if (numeroOrigem == numeroDestino) {
+			throw new ContaException("Conta de origem e destino não podem ser iguais.");
+		}
+		Conta origem = buscarConta(numeroOrigem);
+		Conta destino = buscarConta(numeroDestino);
+		if (origem.getSaldo() < valor) {
+			throw new ContaException("Saldo insuficiente na conta de origem.");
+		}
+		origem.setSaldo(origem.getSaldo() - valor);
+		destino.setSaldo(destino.getSaldo() + valor);
+	}
 
 	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {
