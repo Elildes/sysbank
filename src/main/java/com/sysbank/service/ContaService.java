@@ -2,6 +2,8 @@ package com.sysbank.service;
 
 import com.sysbank.exception.ContaException;
 import com.sysbank.model.Conta;
+import com.sysbank.model.ContaBonus;
+import com.sysbank.model.ContaPoupanca;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +16,22 @@ public class ContaService {
 		this.contas = new HashMap<>();
 	}
 
-	// Issue #2 - Cadastrar Conta
+	// Issue #2 - Cadastrar Conta Simples
 	public void cadastrarConta(int numero) throws ContaException {
-		if (contas.containsKey(numero)) {
-			throw new ContaException("Já existe uma conta com o número " + numero + ".");
-		}
+		validarNumeroDuplicado(numero);
 		contas.put(numero, new Conta(numero));
+	}
+
+	// Issue #16 - Cadastrar Conta Bônus
+	public void cadastrarContaBonus(int numero) throws ContaException {
+		validarNumeroDuplicado(numero);
+		contas.put(numero, new ContaBonus(numero));
+	}
+
+	// Issue #17 - Cadastrar Conta Poupança
+	public void cadastrarContaPoupanca(int numero) throws ContaException {
+		validarNumeroDuplicado(numero);
+		contas.put(numero, new ContaPoupanca(numero));
 	}
 
 	// Issue #3 - Consultar Saldo
@@ -27,17 +39,36 @@ public class ContaService {
 		return buscarConta(numero).getSaldo();
 	}
 
+	// Consultar informações completas da conta
+	public String consultarInfoConta(int numero) throws ContaException {
+		Conta conta = buscarConta(numero);
+		if (conta instanceof ContaBonus cb) {
+			return String.format("Conta %d | Tipo: Bonus | Saldo: R$ %.2f | Pontuacao: %d pts", numero,
+					conta.getSaldo(), cb.getPontuacao());
+		}
+		if (conta instanceof ContaPoupanca) {
+			return String.format("Conta %d | Tipo: Poupanca | Saldo: R$ %.2f", numero, conta.getSaldo());
+		}
+		return String.format("Conta %d | Tipo: Simples | Saldo: R$ %.2f", numero, conta.getSaldo());
+	}
+
 	// Issue #4 - Crédito
 	public void credito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
 		conta.setSaldo(conta.getSaldo() + valor);
+		if (conta instanceof ContaBonus cb) {
+			cb.adicionarPontuacaoDeposito(valor);
+		}
 	}
 
-	// Issue #5 - Débito (saldo negativo permitido)
+	// Issue #5 - Débito
 	public void debito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
+		if (conta.getSaldo() < valor) {
+			throw new ContaException("Saldo insuficiente para realizar o débito.");
+		}
 		conta.setSaldo(conta.getSaldo() - valor);
 	}
 
@@ -49,8 +80,23 @@ public class ContaService {
 		}
 		Conta origem = buscarConta(numeroOrigem);
 		Conta destino = buscarConta(numeroDestino);
+		if (origem.getSaldo() < valor) {
+			throw new ContaException("Saldo insuficiente na conta de origem.");
+		}
 		origem.setSaldo(origem.getSaldo() - valor);
 		destino.setSaldo(destino.getSaldo() + valor);
+		if (destino instanceof ContaBonus cb) {
+			cb.adicionarPontuacaoTransferencia(valor);
+		}
+	}
+
+	// Issue #17 - Render Juros em todas as Contas Poupança
+	public void renderJurosEmTodasPoupancas(double taxaPercentual) throws ContaException {
+		if (taxaPercentual <= 0) {
+			throw new ContaException("A taxa de juros deve ser positiva.");
+		}
+		contas.values().stream().filter(c -> c instanceof ContaPoupanca).map(c -> (ContaPoupanca) c)
+				.forEach(c -> c.renderJuros(taxaPercentual));
 	}
 
 	// Método auxiliar interno
@@ -60,6 +106,12 @@ public class ContaService {
 			throw new ContaException("Conta " + numero + " não encontrada.");
 		}
 		return conta;
+	}
+
+	private void validarNumeroDuplicado(int numero) throws ContaException {
+		if (contas.containsKey(numero)) {
+			throw new ContaException("Já existe uma conta com o número " + numero + ".");
+		}
 	}
 
 	// Bug #18 - validação separada: negativo e zero com mensagens distintas
