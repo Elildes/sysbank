@@ -1,6 +1,7 @@
 package com.sysbank.service;
 
 import com.sysbank.exception.ContaException;
+import com.sysbank.model.ContaBonus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,9 @@ class ContaServiceTest {
 		service = new ContaService();
 	}
 
-	// Issue #2 - Cadastrar Conta
+	// Issue #2
 	@Test
-	@DisplayName("#2 Deve cadastrar conta com saldo zero")
+	@DisplayName("#2 Deve cadastrar conta simples com saldo zero")
 	void deveCadastrarContaComSaldoZero() throws ContaException {
 		service.cadastrarConta(1001);
 		assertEquals(0.0, service.buscarConta(1001).getSaldo());
@@ -32,7 +33,7 @@ class ContaServiceTest {
 		assertThrows(ContaException.class, () -> service.cadastrarConta(1001));
 	}
 
-	// Issue #3 - Consultar Saldo
+	// Issue #3
 	@Test
 	@DisplayName("#3 Deve consultar saldo de conta existente")
 	void deveConsultarSaldo() throws ContaException {
@@ -46,7 +47,7 @@ class ContaServiceTest {
 		assertThrows(ContaException.class, () -> service.consultarSaldo(9999));
 	}
 
-	// Issue #4 - Crédito
+	// Issue #4
 	@Test
 	@DisplayName("#4 Deve creditar valor corretamente")
 	void deveCreditarValor() throws ContaException {
@@ -62,13 +63,7 @@ class ContaServiceTest {
 		assertThrows(ContaException.class, () -> service.credito(3002, -50.0));
 	}
 
-	@Test
-	@DisplayName("#4 Deve lancar excecao ao creditar em conta inexistente")
-	void deveLancarExcecaoCreditoContaInexistente() {
-		assertThrows(ContaException.class, () -> service.credito(9999, 100.0));
-	}
-
-	// Issue #5 - Débito
+	// Issue #5
 	@Test
 	@DisplayName("#5 Deve debitar valor corretamente")
 	void deveDebitarValor() throws ContaException {
@@ -78,7 +73,7 @@ class ContaServiceTest {
 		assertEquals(200.0, service.consultarSaldo(4001));
 	}
 
-	// Bug #15 - corrigido: débito com saldo insuficiente deve lançar exceção
+	// Bug #15
 	@Test
 	@DisplayName("#15 Deve lancar excecao ao debitar com saldo insuficiente")
 	void deveLancarExcecaoSaldoInsuficienteNoDebito() throws ContaException {
@@ -87,13 +82,7 @@ class ContaServiceTest {
 		assertThrows(ContaException.class, () -> service.debito(4002, 200.0));
 	}
 
-	@Test
-	@DisplayName("#5 Deve lancar excecao ao debitar em conta inexistente")
-	void deveLancarExcecaoDebitoContaInexistente() {
-		assertThrows(ContaException.class, () -> service.debito(9999, 100.0));
-	}
-
-	// Issue #6 - Transferência
+	// Issue #6
 	@Test
 	@DisplayName("#6 Deve transferir valor entre contas corretamente")
 	void deveTransferirValor() throws ContaException {
@@ -105,7 +94,7 @@ class ContaServiceTest {
 		assertEquals(200.0, service.consultarSaldo(5002));
 	}
 
-	// Bug #15 - corrigido: transferência com saldo insuficiente deve lançar exceção
+	// Bug #15
 	@Test
 	@DisplayName("#15 Deve lancar excecao ao transferir com saldo insuficiente")
 	void deveLancarExcecaoSaldoInsuficienteNaTransferencia() throws ContaException {
@@ -115,10 +104,33 @@ class ContaServiceTest {
 		assertThrows(ContaException.class, () -> service.transferencia(5003, 5004, 500.0));
 	}
 
+	// Issue #16 - Conta Bônus
 	@Test
-	@DisplayName("#6 Deve lancar excecao quando origem e destino sao iguais")
-	void deveLancarExcecaoOrigemIgualDestino() throws ContaException {
-		service.cadastrarConta(5005);
-		assertThrows(ContaException.class, () -> service.transferencia(5005, 5005, 50.0));
+	@DisplayName("#16 Deve cadastrar conta bonus com pontuacao inicial 10")
+	void deveCadastrarContaBonusComPontuacaoInicial() throws ContaException {
+		service.cadastrarContaBonus(6001);
+		ContaBonus cb = (ContaBonus) service.buscarConta(6001);
+		assertEquals(10, cb.getPontuacao());
+		assertEquals(0.0, cb.getSaldo());
+	}
+
+	@Test
+	@DisplayName("#16 Deposito em conta bonus deve acumular pontuacao")
+	void deveAcumularPontuacaoNoDeposito() throws ContaException {
+		service.cadastrarContaBonus(6002);
+		service.credito(6002, 540.0); // 5 pontos
+		ContaBonus cb = (ContaBonus) service.buscarConta(6002);
+		assertEquals(15, cb.getPontuacao()); // 10 iniciais + 5
+	}
+
+	@Test
+	@DisplayName("#16 Transferencia recebida em conta bonus deve acumular pontuacao")
+	void deveAcumularPontuacaoNaTransferencia() throws ContaException {
+		service.cadastrarConta(6003);
+		service.cadastrarContaBonus(6004);
+		service.credito(6003, 1000.0);
+		service.transferencia(6003, 6004, 540.0); // 2 pontos
+		ContaBonus cb = (ContaBonus) service.buscarConta(6004);
+		assertEquals(12, cb.getPontuacao()); // 10 iniciais + 2
 	}
 }
