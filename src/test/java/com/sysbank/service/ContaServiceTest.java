@@ -133,4 +133,39 @@ class ContaServiceTest {
 		ContaBonus cb = (ContaBonus) service.buscarConta(6004);
 		assertEquals(12, cb.getPontuacao()); // 10 iniciais + 2
 	}
+
+	// Issue #17 - Conta Poupança
+	@Test
+	@DisplayName("#17 Deve cadastrar conta poupanca com saldo zero")
+	void deveCadastrarContaPoupanca() throws ContaException {
+		service.cadastrarContaPoupanca(7001);
+		assertEquals(0.0, service.consultarSaldo(7001));
+	}
+
+	@Test
+	@DisplayName("#17 Deve aplicar juros corretamente na conta poupanca")
+	void deveAplicarJurosNaContaPoupanca() throws ContaException {
+		service.cadastrarContaPoupanca(7002);
+		service.credito(7002, 200.0);
+		service.renderJurosEmTodasPoupancas(10.5);
+		assertEquals(221.0, service.consultarSaldo(7002), 0.01);
+	}
+
+	@Test
+	@DisplayName("#17 Render juros deve afetar apenas contas poupanca")
+	void renderJurosDeveAfetarApenasContasPoupanca() throws ContaException {
+		service.cadastrarConta(7003);
+		service.cadastrarContaPoupanca(7004);
+		service.credito(7003, 200.0);
+		service.credito(7004, 200.0);
+		service.renderJurosEmTodasPoupancas(10.0);
+		assertEquals(200.0, service.consultarSaldo(7003)); // simples: não muda
+		assertEquals(220.0, service.consultarSaldo(7004), 0.01); // poupança: muda
+	}
+
+	@Test
+	@DisplayName("#17 Deve lancar excecao com taxa de juros negativa")
+	void deveLancarExcecaoTaxaNegativa() {
+		assertThrows(ContaException.class, () -> service.renderJurosEmTodasPoupancas(-5.0));
+	}
 }
