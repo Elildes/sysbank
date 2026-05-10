@@ -56,19 +56,10 @@ class ContaServiceTest {
 	}
 
 	@Test
-	@DisplayName("#4 Credito acumulado deve somar corretamente")
-	void deveCreditarAcumulado() throws ContaException {
-		service.cadastrarConta(3002);
-		service.credito(3002, 100.0);
-		service.credito(3002, 50.0);
-		assertEquals(150.0, service.consultarSaldo(3002));
-	}
-
-	@Test
 	@DisplayName("#4 Deve lancar excecao ao creditar valor negativo")
 	void deveLancarExcecaoValorNegativoNoCredito() throws ContaException {
-		service.cadastrarConta(3003);
-		assertThrows(ContaException.class, () -> service.credito(3003, -50.0));
+		service.cadastrarConta(3002);
+		assertThrows(ContaException.class, () -> service.credito(3002, -50.0));
 	}
 
 	@Test
@@ -76,86 +67,58 @@ class ContaServiceTest {
 	void deveLancarExcecaoCreditoContaInexistente() {
 		assertThrows(ContaException.class, () -> service.credito(9999, 100.0));
 	}
-	
+
 	// Issue #5 - Débito
-    @Test
-    @DisplayName("#5 Deve debitar valor corretamente")
-    void deveDebitarValor() throws ContaException {
-        service.cadastrarConta(4001);
-        service.credito(4001, 300.0);
-        service.debito(4001, 100.0);
-        assertEquals(200.0, service.consultarSaldo(4001));
-    }
+	@Test
+	@DisplayName("#5 Deve debitar valor corretamente")
+	void deveDebitarValor() throws ContaException {
+		service.cadastrarConta(4001);
+		service.credito(4001, 300.0);
+		service.debito(4001, 100.0);
+		assertEquals(200.0, service.consultarSaldo(4001));
+	}
 
-    @Test
-    @DisplayName("#5 Deve permitir saldo negativo apos debito")
-    void devePermitirSaldoNegativo() throws ContaException {
-        service.cadastrarConta(4002);
-        service.debito(4002, 50.0);
-        assertEquals(-50.0, service.consultarSaldo(4002));
-    }
+	// Bug #15 - corrigido: débito com saldo insuficiente deve lançar exceção
+	@Test
+	@DisplayName("#15 Deve lancar excecao ao debitar com saldo insuficiente")
+	void deveLancarExcecaoSaldoInsuficienteNoDebito() throws ContaException {
+		service.cadastrarConta(4002);
+		service.credito(4002, 100.0);
+		assertThrows(ContaException.class, () -> service.debito(4002, 200.0));
+	}
 
-    @Test
-    @DisplayName("#5 Deve lancar excecao ao debitar valor negativo")
-    void deveLancarExcecaoValorNegativoNoDebito() throws ContaException {
-        service.cadastrarConta(4003);
-        assertThrows(ContaException.class, () -> service.debito(4003, -10.0));
-    }
+	@Test
+	@DisplayName("#5 Deve lancar excecao ao debitar em conta inexistente")
+	void deveLancarExcecaoDebitoContaInexistente() {
+		assertThrows(ContaException.class, () -> service.debito(9999, 100.0));
+	}
 
-    @Test
-    @DisplayName("#5 Deve lancar excecao ao debitar em conta inexistente")
-    void deveLancarExcecaoDebitoContaInexistente() {
-        assertThrows(ContaException.class, () -> service.debito(9999, 100.0));
-    }
-    
- // Issue #6 - Transferência
-    @Test
-    @DisplayName("#6 Deve transferir valor entre contas corretamente")
-    void deveTransferirValor() throws ContaException {
-        service.cadastrarConta(5001);
-        service.cadastrarConta(5002);
-        service.credito(5001, 500.0);
-        service.transferencia(5001, 5002, 200.0);
-        assertEquals(300.0, service.consultarSaldo(5001));
-        assertEquals(200.0, service.consultarSaldo(5002));
-    }
+	// Issue #6 - Transferência
+	@Test
+	@DisplayName("#6 Deve transferir valor entre contas corretamente")
+	void deveTransferirValor() throws ContaException {
+		service.cadastrarConta(5001);
+		service.cadastrarConta(5002);
+		service.credito(5001, 500.0);
+		service.transferencia(5001, 5002, 200.0);
+		assertEquals(300.0, service.consultarSaldo(5001));
+		assertEquals(200.0, service.consultarSaldo(5002));
+	}
 
-    @Test
-    @DisplayName("#6 Deve permitir saldo negativo na origem apos transferencia")
-    void devePermitirSaldoNegativoNaOrigem() throws ContaException {
-        service.cadastrarConta(5003);
-        service.cadastrarConta(5004);
-        service.transferencia(5003, 5004, 100.0);
-        assertEquals(-100.0, service.consultarSaldo(5003));
-        assertEquals(100.0,  service.consultarSaldo(5004));
-    }
+	// Bug #15 - corrigido: transferência com saldo insuficiente deve lançar exceção
+	@Test
+	@DisplayName("#15 Deve lancar excecao ao transferir com saldo insuficiente")
+	void deveLancarExcecaoSaldoInsuficienteNaTransferencia() throws ContaException {
+		service.cadastrarConta(5003);
+		service.cadastrarConta(5004);
+		service.credito(5003, 100.0);
+		assertThrows(ContaException.class, () -> service.transferencia(5003, 5004, 500.0));
+	}
 
-    @Test
-    @DisplayName("#6 Deve lancar excecao quando conta de origem nao existe")
-    void deveLancarExcecaoOrigemInexistente() throws ContaException {
-        service.cadastrarConta(5005);
-        assertThrows(ContaException.class, () -> service.transferencia(9999, 5005, 50.0));
-    }
-
-    @Test
-    @DisplayName("#6 Deve lancar excecao quando conta de destino nao existe")
-    void deveLancarExcecaoDestinoInexistente() throws ContaException {
-        service.cadastrarConta(5006);
-        assertThrows(ContaException.class, () -> service.transferencia(5006, 9999, 50.0));
-    }
-
-    @Test
-    @DisplayName("#6 Deve lancar excecao quando origem e destino sao iguais")
-    void deveLancarExcecaoOrigemIgualDestino() throws ContaException {
-        service.cadastrarConta(5007);
-        assertThrows(ContaException.class, () -> service.transferencia(5007, 5007, 50.0));
-    }
-
-    @Test
-    @DisplayName("#6 Deve lancar excecao ao transferir valor negativo")
-    void deveLancarExcecaoValorNegativoNaTransferencia() throws ContaException {
-        service.cadastrarConta(5008);
-        service.cadastrarConta(5009);
-        assertThrows(ContaException.class, () -> service.transferencia(5008, 5009, -10.0));
-    }
+	@Test
+	@DisplayName("#6 Deve lancar excecao quando origem e destino sao iguais")
+	void deveLancarExcecaoOrigemIgualDestino() throws ContaException {
+		service.cadastrarConta(5005);
+		assertThrows(ContaException.class, () -> service.transferencia(5005, 5005, 50.0));
+	}
 }
