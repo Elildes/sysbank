@@ -114,9 +114,13 @@ public class ContaService {
 		}
 	}
 
+	// Bug #18 - validação separada: negativo e zero com mensagens distintas
 	private void validarValor(double valor) throws ContaException {
-		if (valor <= 0) {
-			throw new ContaException("O valor da operação deve ser positivo.");
+		if (valor < 0) {
+			throw new ContaException("Operacao nao permitida: o valor nao pode ser negativo.");
+		}
+		if (valor == 0) {
+			throw new ContaException("Operacao nao permitida: o valor deve ser maior que zero.");
 		}
 	}
 }
