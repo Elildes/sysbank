@@ -137,6 +137,35 @@ Este projeto prioriza:
 
 ---
 
+## 🚀 Como Executar
+
+### Pré-requisitos
+- JDK 17 ou superior
+- Maven 3.6 ou superior
+
+### Via Maven (recomendado)
+
+```powershell
+# Na raiz do projeto
+mvn compile
+mvn exec:java -Dexec.mainClass="com.sysbank.Main"
+```
+
+### Via Eclipse
+
+1. `File → Import → Maven → Existing Maven Projects`
+2. Selecione a pasta raiz do projeto
+3. Botão direito no projeto → `Run As → Java Application`
+4. Selecione `com.sysbank.Main`
+
+### Executar Testes
+
+```powershell
+mvn test
+```
+
+---
+
 ## 📄 Licença
 
 Projeto desenvolvido para fins **educacionais/acadêmicos**.
