@@ -235,4 +235,53 @@ class ContaServiceTest {
 		ContaException ex = assertThrows(ContaException.class, () -> service.transferencia(8003, 8004, -50.0));
 		assertTrue(ex.getMessage().contains("negativo"));
 	}
+
+	// Issue #29 - v3 Req 2
+	@Test
+	@DisplayName("#29 Conta simples deve aceitar debito ate o limite de -1000")
+	void contaSimplesAceitaDebitoAteOLimite() throws ContaException {
+		service.cadastrarConta(9001);
+		service.debito(9001, 1000.0);
+		assertEquals(-1000.0, service.consultarSaldo(9001));
+	}
+
+	@Test
+	@DisplayName("#29 Conta simples deve recusar debito que ultrapassa -1000")
+	void contaSimplesRecusaDebitoAlemDoLimite() throws ContaException {
+		service.cadastrarConta(9002);
+		assertThrows(ContaException.class, () -> service.debito(9002, 1001.0));
+	}
+
+	@Test
+	@DisplayName("#29 Conta bonus deve aceitar debito ate o limite de -1000")
+	void contaBonusAceitaDebitoAteOLimite() throws ContaException {
+		service.cadastrarContaBonus(9003);
+		service.debito(9003, 1000.0);
+		assertEquals(-1000.0, service.consultarSaldo(9003));
+	}
+
+	@Test
+	@DisplayName("#29 Conta poupanca nao permite saldo negativo")
+	void contaPoupancaNaoPermiteSaldoNegativo() throws ContaException {
+		service.cadastrarContaPoupanca(9004, 100.0);
+		assertThrows(ContaException.class, () -> service.debito(9004, 200.0));
+	}
+
+	@Test
+	@DisplayName("#29 Transferencia de conta simples respeita limite de -1000")
+	void transferenciaContaSimplesRespeItaLimite() throws ContaException {
+		service.cadastrarConta(9005);
+		service.cadastrarConta(9006);
+		service.transferencia(9005, 9006, 1000.0);
+		assertEquals(-1000.0, service.consultarSaldo(9005));
+	}
+
+	@Test
+	@DisplayName("#29 Transferencia de conta simples recusa valor alem do limite")
+	void transferenciaContaSimplesRecusaAlemDoLimite() throws ContaException {
+		service.cadastrarConta(9007);
+		service.cadastrarConta(9008);
+		assertThrows(ContaException.class, () -> service.transferencia(9007, 9008, 1001.0));
+	}
+
 }

@@ -65,17 +65,25 @@ public class ContaService {
 		}
 	}
 
-	// Issue #5 - Débito
+	// Issue #29 (v3 Req 2) - Débito com limite de saldo negativo
+	// ContaPoupanca: mantém proibição de saldo negativo
+	// Conta Simples e ContaBonus: permite saldo negativo até -1000
 	public void debito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
-		if (conta.getSaldo() < valor) {
-			throw new ContaException("Saldo insuficiente para realizar o débito.");
+		if (conta instanceof ContaPoupanca) {
+			if (conta.getSaldo() < valor) {
+				throw new ContaException("Saldo insuficiente para realizar o débito.");
+			}
+		} else {
+			if (conta.getSaldo() - valor < -1000.0) {
+				throw new ContaException("Limite de saldo negativo excedido. Maximo permitido: R$ -1.000,00");
+			}
 		}
 		conta.setSaldo(conta.getSaldo() - valor);
 	}
 
-	// Issue #6 - Transferência
+	// Issue #29 (v3 Req 2) - Transferência com limite de saldo negativo
 	public void transferencia(int numeroOrigem, int numeroDestino, double valor) throws ContaException {
 		validarValor(valor);
 		if (numeroOrigem == numeroDestino) {
@@ -83,9 +91,17 @@ public class ContaService {
 		}
 		Conta origem = buscarConta(numeroOrigem);
 		Conta destino = buscarConta(numeroDestino);
-		if (origem.getSaldo() < valor) {
-			throw new ContaException("Saldo insuficiente na conta de origem.");
+
+		if (origem instanceof ContaPoupanca) {
+			if (origem.getSaldo() < valor) {
+				throw new ContaException("Saldo insuficiente na conta de origem.");
+			}
+		} else {
+			if (origem.getSaldo() - valor < -1000.0) {
+				throw new ContaException("Limite de saldo negativo excedido na origem. Maximo: R$ -1.000,00");
+			}
 		}
+
 		origem.setSaldo(origem.getSaldo() - valor);
 		destino.setSaldo(destino.getSaldo() + valor);
 		if (destino instanceof ContaBonus cb) {
