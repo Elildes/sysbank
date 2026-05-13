@@ -19,6 +19,12 @@ public class Conta {
 		this.saldo = 0.0;
 	}
 
+	// Hotfix #30: construtor com saldo inicial obrigatório
+	public Conta(int numero, double saldoInicial) {
+		this.numero = numero;
+		this.saldo = saldoInicial;
+	}
+
 	public int getNumero() {
 		return numero;
 	}
