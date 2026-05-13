@@ -28,10 +28,13 @@ public class ContaService {
 		contas.put(numero, new ContaBonus(numero));
 	}
 
-	// Issue #17 - Cadastrar Conta Poupança
-	public void cadastrarContaPoupanca(int numero) throws ContaException {
+	// Issue #28 (v3 Req 1) - Conta Poupança com saldo inicial obrigatório
+	public void cadastrarContaPoupanca(int numero, double saldoInicial) throws ContaException {
 		validarNumeroDuplicado(numero);
-		contas.put(numero, new ContaPoupanca(numero));
+		if (saldoInicial < 0) {
+			throw new ContaException("O saldo inicial nao pode ser negativo.");
+		}
+		contas.put(numero, new ContaPoupanca(numero, saldoInicial));
 	}
 
 	// Issue #3 - Consultar Saldo

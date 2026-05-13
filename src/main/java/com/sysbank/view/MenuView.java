@@ -76,7 +76,8 @@ public class MenuView {
 	private void fluxoCadastrarContaPoupanca() {
 		System.out.println("--- Cadastrar Conta Poupanca ---");
 		int numero = lerInteiro("Numero da conta");
-		System.out.println(controller.cadastrarContaPoupanca(numero));
+		double saldoInicial = lerDouble("Saldo inicial");
+		System.out.println(controller.cadastrarContaPoupanca(numero, saldoInicial));
 	}
 
 	private void fluxoConsultarSaldo() {

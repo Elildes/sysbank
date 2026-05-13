@@ -19,6 +19,12 @@ public class Conta {
 		this.saldo = 0.0;
 	}
 
+	// v3 Req 1 (#28): construtor com saldo inicial
+	public Conta(int numero, double saldoInicial) {
+		this.numero = numero;
+		this.saldo = saldoInicial;
+	}
+
 	public int getNumero() {
 		return numero;
 	}

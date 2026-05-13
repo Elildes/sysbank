@@ -182,33 +182,26 @@ class ContaServiceTest {
 		assertEquals(12, cb.getPontuacao()); // 10 iniciais + 2
 	}
 
-	// Issue #17 - Conta Poupança
+	// Issue #28 - v3 Req 1
 	@Test
-	@DisplayName("#17 Deve cadastrar conta poupanca com saldo zero")
-	void deveCadastrarContaPoupanca() throws ContaException {
-		service.cadastrarContaPoupanca(7001);
-		assertEquals(0.0, service.consultarSaldo(7001));
+	@DisplayName("#28 Deve cadastrar conta poupanca com saldo inicial informado")
+	void deveCadastrarContaPoupancaComSaldoInicial() throws ContaException {
+		service.cadastrarContaPoupanca(7010, 500.0);
+		assertEquals(500.0, service.consultarSaldo(7010));
 	}
 
 	@Test
-	@DisplayName("#17 Deve aplicar juros corretamente na conta poupanca")
-	void deveAplicarJurosNaContaPoupanca() throws ContaException {
-		service.cadastrarContaPoupanca(7002);
-		service.credito(7002, 200.0);
+	@DisplayName("#28 Deve lancar excecao com saldo inicial negativo na poupanca")
+	void deveLancarExcecaoPoupancaSaldoInicialNegativo() {
+		assertThrows(ContaException.class, () -> service.cadastrarContaPoupanca(7011, -100.0));
+	}
+
+	@Test
+	@DisplayName("#28 Deve aplicar juros sobre saldo inicial da poupanca")
+	void deveAplicarJurosNaContaPoupancaComSaldoInicial() throws ContaException {
+		service.cadastrarContaPoupanca(7012, 200.0);
 		service.renderJurosEmTodasPoupancas(10.5);
-		assertEquals(221.0, service.consultarSaldo(7002), 0.01);
-	}
-
-	@Test
-	@DisplayName("#17 Render juros deve afetar apenas contas poupanca")
-	void renderJurosDeveAfetarApenasContasPoupanca() throws ContaException {
-		service.cadastrarConta(7003);
-		service.cadastrarContaPoupanca(7004);
-		service.credito(7003, 200.0);
-		service.credito(7004, 200.0);
-		service.renderJurosEmTodasPoupancas(10.0);
-		assertEquals(200.0, service.consultarSaldo(7003));
-		assertEquals(220.0, service.consultarSaldo(7004), 0.01);
+		assertEquals(221.0, service.consultarSaldo(7012), 0.01);
 	}
 
 	@Test
