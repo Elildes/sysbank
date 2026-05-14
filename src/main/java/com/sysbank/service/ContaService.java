@@ -16,30 +16,28 @@ public class ContaService {
 		this.contas = new HashMap<>();
 	}
 
-	// Issue #2 - Cadastrar Conta Simples
-	public void cadastrarConta(int numero) throws ContaException {
+	// Hotfix #30: cadastrarConta agora exige saldo inicial
+	public void cadastrarConta(int numero, double saldoInicial) throws ContaException {
 		validarNumeroDuplicado(numero);
-		contas.put(numero, new Conta(numero));
+		contas.put(numero, new Conta(numero, saldoInicial));
 	}
 
-	// Issue #16 - Cadastrar Conta Bônus
+	// v2 - mantido de staging
 	public void cadastrarContaBonus(int numero) throws ContaException {
 		validarNumeroDuplicado(numero);
 		contas.put(numero, new ContaBonus(numero));
 	}
 
-	// Issue #17 - Cadastrar Conta Poupança
+	// v2 - mantido de staging
 	public void cadastrarContaPoupanca(int numero) throws ContaException {
 		validarNumeroDuplicado(numero);
 		contas.put(numero, new ContaPoupanca(numero));
 	}
 
-	// Issue #3 - Consultar Saldo
 	public double consultarSaldo(int numero) throws ContaException {
 		return buscarConta(numero).getSaldo();
 	}
 
-	// Consultar informações completas da conta
 	public String consultarInfoConta(int numero) throws ContaException {
 		Conta conta = buscarConta(numero);
 		if (conta instanceof ContaBonus cb) {
@@ -52,7 +50,6 @@ public class ContaService {
 		return String.format("Conta %d | Tipo: Simples | Saldo: R$ %.2f", numero, conta.getSaldo());
 	}
 
-	// Issue #4 - Crédito
 	public void credito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
@@ -62,7 +59,6 @@ public class ContaService {
 		}
 	}
 
-	// Issue #5 - Débito
 	public void debito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
@@ -72,7 +68,6 @@ public class ContaService {
 		conta.setSaldo(conta.getSaldo() - valor);
 	}
 
-	// Issue #6 - Transferência
 	public void transferencia(int numeroOrigem, int numeroDestino, double valor) throws ContaException {
 		validarValor(valor);
 		if (numeroOrigem == numeroDestino) {
@@ -90,7 +85,6 @@ public class ContaService {
 		}
 	}
 
-	// Issue #17 - Render Juros em todas as Contas Poupança
 	public void renderJurosEmTodasPoupancas(double taxaPercentual) throws ContaException {
 		if (taxaPercentual <= 0) {
 			throw new ContaException("A taxa de juros deve ser positiva.");
@@ -99,7 +93,6 @@ public class ContaService {
 				.forEach(c -> c.renderJuros(taxaPercentual));
 	}
 
-	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {
 		Conta conta = contas.get(numero);
 		if (conta == null) {
@@ -114,7 +107,6 @@ public class ContaService {
 		}
 	}
 
-	// Bug #18 - validação separada: negativo e zero com mensagens distintas
 	private void validarValor(double valor) throws ContaException {
 		if (valor < 0) {
 			throw new ContaException("Operacao nao permitida: o valor nao pode ser negativo.");
