@@ -1,6 +1,7 @@
 package com.sysbank.service;
 
 import com.sysbank.exception.ContaException;
+import com.sysbank.model.ContaBonus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,7 +152,72 @@ class ContaServiceTest {
 		assertThrows(ContaException.class, () -> service.transferencia(5003, 5004, 500.0));
 	}
 
-	// Bug #18 - Validação de valores negativos e zero
+	// Issue #16 - Conta Bônus
+	@Test
+	@DisplayName("#16 Deve cadastrar conta bonus com pontuacao inicial 10")
+	void deveCadastrarContaBonusComPontuacaoInicial() throws ContaException {
+		service.cadastrarContaBonus(6001);
+		ContaBonus cb = (ContaBonus) service.buscarConta(6001);
+		assertEquals(10, cb.getPontuacao());
+		assertEquals(0.0, cb.getSaldo());
+	}
+
+	@Test
+	@DisplayName("#16 Deposito em conta bonus deve acumular pontuacao")
+	void deveAcumularPontuacaoNoDeposito() throws ContaException {
+		service.cadastrarContaBonus(6002);
+		service.credito(6002, 540.0);
+		ContaBonus cb = (ContaBonus) service.buscarConta(6002);
+		assertEquals(15, cb.getPontuacao());
+	}
+
+	@Test
+	@DisplayName("#16 Transferencia recebida em conta bonus deve acumular pontuacao")
+	void deveAcumularPontuacaoNaTransferencia() throws ContaException {
+		service.cadastrarConta(6003, 0.0);
+		service.cadastrarContaBonus(6004);
+		service.credito(6003, 1000.0);
+		service.transferencia(6003, 6004, 540.0);
+		ContaBonus cb = (ContaBonus) service.buscarConta(6004);
+		assertEquals(13, cb.getPontuacao()); // 10 iniciais + 3 (nova regra R$150)
+	}
+
+	// Issue #17 - Conta Poupança
+	@Test
+	@DisplayName("#17 Deve cadastrar conta poupanca com saldo zero")
+	void deveCadastrarContaPoupanca() throws ContaException {
+		service.cadastrarContaPoupanca(7001);
+		assertEquals(0.0, service.consultarSaldo(7001));
+	}
+
+	@Test
+	@DisplayName("#17 Deve aplicar juros corretamente na conta poupanca")
+	void deveAplicarJurosNaContaPoupanca() throws ContaException {
+		service.cadastrarContaPoupanca(7002);
+		service.credito(7002, 200.0);
+		service.renderJurosEmTodasPoupancas(10.5);
+		assertEquals(221.0, service.consultarSaldo(7002), 0.01);
+	}
+
+	@Test
+	@DisplayName("#17 Render juros deve afetar apenas contas poupanca")
+	void renderJurosDeveAfetarApenasContasPoupanca() throws ContaException {
+		service.cadastrarConta(7003, 0.0);
+		service.cadastrarContaPoupanca(7004);
+		service.credito(7003, 200.0);
+		service.credito(7004, 200.0);
+		service.renderJurosEmTodasPoupancas(10.0);
+		assertEquals(200.0, service.consultarSaldo(7003));
+		assertEquals(220.0, service.consultarSaldo(7004), 0.01);
+	}
+
+	@Test
+	@DisplayName("#17 Deve lancar excecao com taxa de juros negativa")
+	void deveLancarExcecaoTaxaNegativa() {
+		assertThrows(ContaException.class, () -> service.renderJurosEmTodasPoupancas(-5.0));
+	}
+
+	// Bug #18
 	@Test
 	@DisplayName("#18 Deve lancar excecao especifica para credito com valor negativo")
 	void deveLancarExcecaoEspecificaParaValorNegativoNoCredito() throws ContaException {

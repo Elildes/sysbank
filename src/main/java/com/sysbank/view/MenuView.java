@@ -30,10 +30,13 @@ public class MenuView {
 
 			switch (opcao) {
 			case 1 -> fluxoCadastrarConta();
-			case 2 -> fluxoConsultarSaldo();
-			case 3 -> fluxoCredito();
-			case 4 -> fluxoDebito();
-			case 5 -> fluxoTransferencia();
+			case 2 -> fluxoCadastrarContaBonus();
+			case 3 -> fluxoCadastrarContaPoupanca();
+			case 4 -> fluxoConsultarSaldo();
+			case 5 -> fluxoCredito();
+			case 6 -> fluxoDebito();
+			case 7 -> fluxoTransferencia();
+			case 8 -> fluxoRenderJuros();
 			case 0 -> {
 				executando = false;
 				System.out.println("Encerrando. Ate logo!");
@@ -47,20 +50,37 @@ public class MenuView {
 	private void exibirMenu() {
 		System.out.println(SEPARADOR);
 		System.out.println("  [1] Cadastrar Conta Simples");
-		System.out.println("  [2] Consultar Saldo");
-		System.out.println("  [3] Credito em Conta");
-		System.out.println("  [4] Debito em Conta");
-		System.out.println("  [5] Transferencia entre Contas");
+		System.out.println("  [2] Cadastrar Conta Bonus");
+		System.out.println("  [3] Cadastrar Conta Poupanca");
+		System.out.println("  [4] Consultar Saldo");
+		System.out.println("  [5] Credito em Conta");
+		System.out.println("  [6] Debito em Conta");
+		System.out.println("  [7] Transferencia entre Contas");
+		System.out.println("  [8] Render Juros (Poupanca)");
 		System.out.println("  [0] Sair");
 		System.out.println(SEPARADOR);
 	}
 
-	// Hotfix #30: solicita saldo inicial ao cadastrar conta simples
+	// Hotfix #30: solicita saldo inicial
 	private void fluxoCadastrarConta() {
 		System.out.println("--- Cadastrar Conta Simples ---");
 		int numero = lerInteiro("Numero da conta");
 		double saldoInicial = lerDouble("Saldo inicial");
 		System.out.println(controller.cadastrarConta(numero, saldoInicial));
+	}
+
+	// v2 - mantido de staging
+	private void fluxoCadastrarContaBonus() {
+		System.out.println("--- Cadastrar Conta Bonus ---");
+		int numero = lerInteiro("Numero da conta");
+		System.out.println(controller.cadastrarContaBonus(numero));
+	}
+
+	// v2 - mantido de staging
+	private void fluxoCadastrarContaPoupanca() {
+		System.out.println("--- Cadastrar Conta Poupanca ---");
+		int numero = lerInteiro("Numero da conta");
+		System.out.println(controller.cadastrarContaPoupanca(numero));
 	}
 
 	private void fluxoConsultarSaldo() {
@@ -89,6 +109,13 @@ public class MenuView {
 		int destino = lerInteiro("Numero da conta de destino");
 		double valor = lerDouble("Valor da transferencia");
 		System.out.println(controller.transferencia(origem, destino, valor));
+	}
+
+	// v2 - mantido de staging
+	private void fluxoRenderJuros() {
+		System.out.println("--- Render Juros (todas as contas Poupanca) ---");
+		double taxa = lerDouble("Taxa de juros (%)");
+		System.out.println(controller.renderJuros(taxa));
 	}
 
 	private int lerInteiro(String campo) {

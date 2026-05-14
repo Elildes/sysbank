@@ -11,7 +11,7 @@ public class ContaController {
 		this.contaService = contaService;
 	}
 
-	// Hotfix #30 - Cadastrar Conta Simples com saldo inicial obrigatório
+	// Hotfix #30
 	public String cadastrarConta(int numero, double saldoInicial) {
 		try {
 			contaService.cadastrarConta(numero, saldoInicial);
@@ -21,7 +21,26 @@ public class ContaController {
 		}
 	}
 
-	// Issue #3 - Consultar Saldo
+	// v2 - mantido de staging
+	public String cadastrarContaBonus(int numero) {
+		try {
+			contaService.cadastrarContaBonus(numero);
+			return "✔ Conta bonus " + numero + " cadastrada. Saldo: R$ 0,00 | Pontuacao inicial: 10 pts";
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}
+
+	// v2 - mantido de staging
+	public String cadastrarContaPoupanca(int numero) {
+		try {
+			contaService.cadastrarContaPoupanca(numero);
+			return "✔ Conta poupanca " + numero + " cadastrada. Saldo inicial: R$ 0,00";
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}
+
 	public String consultarSaldo(int numero) {
 		try {
 			return "✔ " + contaService.consultarInfoConta(numero);
@@ -30,7 +49,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #4 - Crédito
 	public String credito(int numero, double valor) {
 		try {
 			contaService.credito(numero, valor);
@@ -40,7 +58,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #5 - Débito
 	public String debito(int numero, double valor) {
 		try {
 			contaService.debito(numero, valor);
@@ -51,7 +68,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #6 - Transferência
 	public String transferencia(int numeroOrigem, int numeroDestino, double valor) {
 		try {
 			contaService.transferencia(numeroOrigem, numeroDestino, valor);
@@ -61,6 +77,16 @@ public class ContaController {
 					"✔ Transferencia de R$ %.2f da conta %d para conta %d realizada.%n"
 							+ "   Conta %d | Novo saldo: R$ %.2f%n" + "   Conta %d | Novo saldo: R$ %.2f",
 					valor, numeroOrigem, numeroDestino, numeroOrigem, saldoOrigem, numeroDestino, saldoDestino);
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}
+
+	// v2 - mantido de staging
+	public String renderJuros(double taxaPercentual) {
+		try {
+			contaService.renderJurosEmTodasPoupancas(taxaPercentual);
+			return String.format("✔ Juros de %.2f%% aplicados em todas as contas poupanca.", taxaPercentual);
 		} catch (ContaException e) {
 			return "✘ Erro: " + e.getMessage();
 		}
