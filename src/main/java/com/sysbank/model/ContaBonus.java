@@ -26,11 +26,10 @@ public class ContaBonus extends Conta {
 	}
 
 	/**
-	 * Acrescenta pontuação por transferência recebida: 1 ponto a cada R$ 200,00.
-	 * Exemplo: R$ 540,00 = 2 pontos.
+	 * Issue #31: nova regra — 1 ponto a cada R$ 150,00 (era R$ 200,00).
 	 */
 	public void adicionarPontuacaoTransferencia(double valor) {
-		this.pontuacao += (int) (valor / 200);
+		this.pontuacao += (int) (valor / 150);
 	}
 
 	@Override

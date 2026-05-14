@@ -179,7 +179,7 @@ class ContaServiceTest {
 		service.credito(6003, 1000.0);
 		service.transferencia(6003, 6004, 540.0);
 		ContaBonus cb = (ContaBonus) service.buscarConta(6004);
-		assertEquals(12, cb.getPontuacao());
+		assertEquals(13, cb.getPontuacao()); // 10 iniciais + 3 (nova regra R$150)
 	}
 
 	// Issue #17 - Conta Poupança
