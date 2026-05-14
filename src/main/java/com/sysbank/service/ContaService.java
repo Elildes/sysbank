@@ -16,19 +16,19 @@ public class ContaService {
 		this.contas = new HashMap<>();
 	}
 
-	// Issue #2 - Cadastrar Conta Simples
-	public void cadastrarConta(int numero) throws ContaException {
+	// Hotfix #30
+	public void cadastrarConta(int numero, double saldoInicial) throws ContaException {
 		validarNumeroDuplicado(numero);
-		contas.put(numero, new Conta(numero));
+		contas.put(numero, new Conta(numero, saldoInicial));
 	}
 
-	// Issue #16 - Cadastrar Conta Bônus
+	// v2
 	public void cadastrarContaBonus(int numero) throws ContaException {
 		validarNumeroDuplicado(numero);
 		contas.put(numero, new ContaBonus(numero));
 	}
 
-	// Issue #28 (v3 Req 1) - Conta Poupança com saldo inicial obrigatório
+	// v3 Req1 #28
 	public void cadastrarContaPoupanca(int numero, double saldoInicial) throws ContaException {
 		validarNumeroDuplicado(numero);
 		if (saldoInicial < 0) {
@@ -37,12 +37,10 @@ public class ContaService {
 		contas.put(numero, new ContaPoupanca(numero, saldoInicial));
 	}
 
-	// Issue #3 - Consultar Saldo
 	public double consultarSaldo(int numero) throws ContaException {
 		return buscarConta(numero).getSaldo();
 	}
 
-	// Consultar informações completas da conta
 	public String consultarInfoConta(int numero) throws ContaException {
 		Conta conta = buscarConta(numero);
 		if (conta instanceof ContaBonus cb) {
@@ -55,7 +53,6 @@ public class ContaService {
 		return String.format("Conta %d | Tipo: Simples | Saldo: R$ %.2f", numero, conta.getSaldo());
 	}
 
-	// Issue #4 - Crédito
 	public void credito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
@@ -65,9 +62,7 @@ public class ContaService {
 		}
 	}
 
-	// Issue #29 (v3 Req 2) - Débito com limite de saldo negativo
-	// ContaPoupanca: mantém proibição de saldo negativo
-	// Conta Simples e ContaBonus: permite saldo negativo até -1000
+	// v3 Req2 #29 - limite -1000 para Simples e Bônus
 	public void debito(int numero, double valor) throws ContaException {
 		validarValor(valor);
 		Conta conta = buscarConta(numero);
@@ -83,7 +78,7 @@ public class ContaService {
 		conta.setSaldo(conta.getSaldo() - valor);
 	}
 
-	// Issue #29 (v3 Req 2) - Transferência com limite de saldo negativo
+	// v3 Req2 #29 - limite -1000 para Simples e Bônus
 	public void transferencia(int numeroOrigem, int numeroDestino, double valor) throws ContaException {
 		validarValor(valor);
 		if (numeroOrigem == numeroDestino) {
@@ -109,7 +104,6 @@ public class ContaService {
 		}
 	}
 
-	// Issue #17 - Render Juros em todas as Contas Poupança
 	public void renderJurosEmTodasPoupancas(double taxaPercentual) throws ContaException {
 		if (taxaPercentual <= 0) {
 			throw new ContaException("A taxa de juros deve ser positiva.");
@@ -118,7 +112,6 @@ public class ContaService {
 				.forEach(c -> c.renderJuros(taxaPercentual));
 	}
 
-	// Método auxiliar interno
 	Conta buscarConta(int numero) throws ContaException {
 		Conta conta = contas.get(numero);
 		if (conta == null) {
@@ -133,7 +126,6 @@ public class ContaService {
 		}
 	}
 
-	// Bug #18 - validação separada: negativo e zero com mensagens distintas
 	private void validarValor(double valor) throws ContaException {
 		if (valor < 0) {
 			throw new ContaException("Operacao nao permitida: o valor nao pode ser negativo.");

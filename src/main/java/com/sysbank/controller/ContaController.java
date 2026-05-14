@@ -11,17 +11,17 @@ public class ContaController {
 		this.contaService = contaService;
 	}
 
-	// Issue #2 - Cadastrar Conta Simples
-	public String cadastrarConta(int numero) {
+	// Hotfix #30
+	public String cadastrarConta(int numero, double saldoInicial) {
 		try {
-			contaService.cadastrarConta(numero);
-			return "✔ Conta simples " + numero + " cadastrada. Saldo inicial: R$ 0,00";
+			contaService.cadastrarConta(numero, saldoInicial);
+			return String.format("✔ Conta simples %d cadastrada. Saldo inicial: R$ %.2f", numero, saldoInicial);
 		} catch (ContaException e) {
 			return "✘ Erro: " + e.getMessage();
 		}
 	}
 
-	// Issue #16 - Cadastrar Conta Bônus
+	// v2
 	public String cadastrarContaBonus(int numero) {
 		try {
 			contaService.cadastrarContaBonus(numero);
@@ -31,7 +31,7 @@ public class ContaController {
 		}
 	}
 
-	// Issue #28 (v3 Req 1)
+	// v3 Req1 #28
 	public String cadastrarContaPoupanca(int numero, double saldoInicial) {
 		try {
 			contaService.cadastrarContaPoupanca(numero, saldoInicial);
@@ -41,7 +41,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #3 - Consultar Saldo
 	public String consultarSaldo(int numero) {
 		try {
 			return "✔ " + contaService.consultarInfoConta(numero);
@@ -50,7 +49,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #4 - Crédito
 	public String credito(int numero, double valor) {
 		try {
 			contaService.credito(numero, valor);
@@ -60,7 +58,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #5 - Débito
 	public String debito(int numero, double valor) {
 		try {
 			contaService.debito(numero, valor);
@@ -71,7 +68,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #6 - Transferência
 	public String transferencia(int numeroOrigem, int numeroDestino, double valor) {
 		try {
 			contaService.transferencia(numeroOrigem, numeroDestino, valor);
@@ -86,7 +82,6 @@ public class ContaController {
 		}
 	}
 
-	// Issue #17 - Render Juros
 	public String renderJuros(double taxaPercentual) {
 		try {
 			contaService.renderJurosEmTodasPoupancas(taxaPercentual);

@@ -61,18 +61,22 @@ public class MenuView {
 		System.out.println(SEPARADOR);
 	}
 
+	// Hotfix #30: solicita saldo inicial
 	private void fluxoCadastrarConta() {
 		System.out.println("--- Cadastrar Conta Simples ---");
 		int numero = lerInteiro("Numero da conta");
-		System.out.println(controller.cadastrarConta(numero));
+		double saldoInicial = lerDouble("Saldo inicial");
+		System.out.println(controller.cadastrarConta(numero, saldoInicial));
 	}
 
+	// v2 - mantido de staging
 	private void fluxoCadastrarContaBonus() {
 		System.out.println("--- Cadastrar Conta Bonus ---");
 		int numero = lerInteiro("Numero da conta");
 		System.out.println(controller.cadastrarContaBonus(numero));
 	}
 
+	// v2 - mantido de staging
 	private void fluxoCadastrarContaPoupanca() {
 		System.out.println("--- Cadastrar Conta Poupanca ---");
 		int numero = lerInteiro("Numero da conta");
@@ -108,6 +112,7 @@ public class MenuView {
 		System.out.println(controller.transferencia(origem, destino, valor));
 	}
 
+	// v2 - mantido de staging
 	private void fluxoRenderJuros() {
 		System.out.println("--- Render Juros (todas as contas Poupanca) ---");
 		double taxa = lerDouble("Taxa de juros (%)");
