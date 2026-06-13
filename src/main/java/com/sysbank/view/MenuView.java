@@ -37,6 +37,7 @@ public class MenuView {
 			case 6 -> fluxoDebito();
 			case 7 -> fluxoTransferencia();
 			case 8 -> fluxoRenderJuros();
+			case 9 -> fluxoConsultarDadosConta();
 			case 0 -> {
 				executando = false;
 				System.out.println("Encerrando. Ate logo!");
@@ -57,6 +58,7 @@ public class MenuView {
 		System.out.println("  [6] Debito em Conta");
 		System.out.println("  [7] Transferencia entre Contas");
 		System.out.println("  [8] Render Juros (Poupanca)");
+		System.out.println("  [9] Consultar Dados da Conta");
 		System.out.println("  [0] Sair");
 		System.out.println(SEPARADOR);
 	}
@@ -145,5 +147,11 @@ public class MenuView {
 				System.out.println("  ✘ Entrada invalida. Informe um valor numerico (ex: 10.5).");
 			}
 		}
+	}
+	
+	private void fluxoConsultarDadosConta() {
+	    System.out.println("--- Consultar Dados da Conta ---");
+	    int numero = lerInteiro("Numero da conta");
+	    System.out.println(controller.consultarDadosConta(numero));
 	}
 }

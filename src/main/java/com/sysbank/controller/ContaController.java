@@ -49,6 +49,15 @@ public class ContaController {
 		}
 	}
 
+	// Issue #40 - Consultar dados da conta
+	public String consultarDadosConta(int numero) {
+		try {
+			return "✔ " + contaService.consultarInfoConta(numero);
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}	
+
 	public String credito(int numero, double valor) {
 		try {
 			contaService.credito(numero, valor);
