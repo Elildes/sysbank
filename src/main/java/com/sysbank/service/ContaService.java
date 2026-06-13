@@ -41,16 +41,22 @@ public class ContaService {
 		return buscarConta(numero).getSaldo();
 	}
 
+	// Issue #40 - Consultar dados completos da conta por número 
 	public String consultarInfoConta(int numero) throws ContaException {
 		Conta conta = buscarConta(numero);
 		if (conta instanceof ContaBonus cb) {
-			return String.format("Conta %d | Tipo: Bonus | Saldo: R$ %.2f | Pontuacao: %d pts", numero,
-					conta.getSaldo(), cb.getPontuacao());
+			return String.format(
+					"Tipo: Bonus | Numero: %d | Saldo: R$ %.2f | Bonus: %d pts",
+					numero, conta.getSaldo(), cb.getPontuacao());
 		}
 		if (conta instanceof ContaPoupanca) {
-			return String.format("Conta %d | Tipo: Poupanca | Saldo: R$ %.2f", numero, conta.getSaldo());
+			return String.format(
+					"Tipo: Poupanca | Numero: %d | Saldo: R$ %.2f",
+					numero, conta.getSaldo());
 		}
-		return String.format("Conta %d | Tipo: Simples | Saldo: R$ %.2f", numero, conta.getSaldo());
+		return String.format(
+				"Tipo: Simples | Numero: %d | Saldo: R$ %.2f",
+				numero, conta.getSaldo());
 	}
 
 	public void credito(int numero, double valor) throws ContaException {
