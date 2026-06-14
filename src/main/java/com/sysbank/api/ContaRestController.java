@@ -1,6 +1,7 @@
 package com.sysbank.api;
 
 import com.sysbank.dto.CadastrarContaRequest;
+import com.sysbank.dto.ValorRequest;
 import com.sysbank.exception.ContaException;
 import com.sysbank.service.ContaService;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,17 @@ public class ContaRestController {
 			return ResponseEntity.ok(String.format("Conta %d | Saldo: R$ %.2f", id, saldo));
 		} catch (ContaException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+
+	// Issue #45 - PUT /banco/conta/{id}/credito
+	@PutMapping("/{id}/credito")
+	public ResponseEntity<String> credito(@PathVariable int id, @RequestBody ValorRequest req) {
+		try {
+			contaService.credito(id, req.getValor());
+			return ResponseEntity.ok(contaService.consultarInfoConta(id));
+		} catch (ContaException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 }
