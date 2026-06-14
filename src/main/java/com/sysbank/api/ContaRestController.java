@@ -66,4 +66,15 @@ public class ContaRestController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+	// Issue #46 - PUT /banco/conta/{id}/debito
+	@PutMapping("/{id}/debito")
+	public ResponseEntity<String> debito(@PathVariable int id, @RequestBody ValorRequest req) {
+		try {
+			contaService.debito(id, req.getValor());
+			return ResponseEntity.ok(contaService.consultarInfoConta(id));
+		} catch (ContaException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
