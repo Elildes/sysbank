@@ -1,6 +1,7 @@
 package com.sysbank.api;
 
 import com.sysbank.dto.CadastrarContaRequest;
+import com.sysbank.dto.TaxaRequest;
 import com.sysbank.dto.TransferenciaRequest;
 import com.sysbank.dto.ValorRequest;
 import com.sysbank.exception.ContaException;
@@ -86,6 +87,18 @@ public class ContaRestController {
 			contaService.transferencia(req.getFrom(), req.getTo(), req.getAmount());
 			return ResponseEntity.ok(String.format("Transferencia de R$ %.2f da conta %d para %d realizada.",
 					req.getAmount(), req.getFrom(), req.getTo()));
+		} catch (ContaException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	// Issue #48 - PUT /banco/conta/rendimento
+	@PutMapping("/rendimento")
+	public ResponseEntity<String> renderJuros(@RequestBody TaxaRequest req) {
+		try {
+			contaService.renderJurosEmTodasPoupancas(req.getTaxa());
+			return ResponseEntity
+					.ok(String.format("Juros de %.2f%% aplicados em todas as contas poupanca.", req.getTaxa()));
 		} catch (ContaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
