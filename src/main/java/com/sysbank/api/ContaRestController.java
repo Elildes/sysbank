@@ -33,4 +33,14 @@ public class ContaRestController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+	// Issue #43 - GET /banco/conta/{id}
+	@GetMapping("/{id}")
+	public ResponseEntity<String> consultarConta(@PathVariable int id) {
+		try {
+			return ResponseEntity.ok(contaService.consultarInfoConta(id));
+		} catch (ContaException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
 }
