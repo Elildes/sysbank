@@ -4,10 +4,12 @@ import com.sysbank.exception.ContaException;
 import com.sysbank.model.Conta;
 import com.sysbank.model.ContaBonus;
 import com.sysbank.model.ContaPoupanca;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class ContaService {
 
 	private final Map<Integer, Conta> contas;
@@ -41,22 +43,17 @@ public class ContaService {
 		return buscarConta(numero).getSaldo();
 	}
 
-	// Issue #40 - Consultar dados completos da conta por número 
+	// Issue #40 - Consultar dados completos da conta por número
 	public String consultarInfoConta(int numero) throws ContaException {
 		Conta conta = buscarConta(numero);
 		if (conta instanceof ContaBonus cb) {
-			return String.format(
-					"Tipo: Bonus | Numero: %d | Saldo: R$ %.2f | Bonus: %d pts",
-					numero, conta.getSaldo(), cb.getPontuacao());
+			return String.format("Tipo: Bonus | Numero: %d | Saldo: R$ %.2f | Bonus: %d pts", numero, conta.getSaldo(),
+					cb.getPontuacao());
 		}
 		if (conta instanceof ContaPoupanca) {
-			return String.format(
-					"Tipo: Poupanca | Numero: %d | Saldo: R$ %.2f",
-					numero, conta.getSaldo());
+			return String.format("Tipo: Poupanca | Numero: %d | Saldo: R$ %.2f", numero, conta.getSaldo());
 		}
-		return String.format(
-				"Tipo: Simples | Numero: %d | Saldo: R$ %.2f",
-				numero, conta.getSaldo());
+		return String.format("Tipo: Simples | Numero: %d | Saldo: R$ %.2f", numero, conta.getSaldo());
 	}
 
 	public void credito(int numero, double valor) throws ContaException {
