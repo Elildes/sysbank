@@ -1,6 +1,7 @@
 package com.sysbank.api;
 
 import com.sysbank.dto.CadastrarContaRequest;
+import com.sysbank.dto.TransferenciaRequest;
 import com.sysbank.dto.ValorRequest;
 import com.sysbank.exception.ContaException;
 import com.sysbank.service.ContaService;
@@ -73,6 +74,18 @@ public class ContaRestController {
 		try {
 			contaService.debito(id, req.getValor());
 			return ResponseEntity.ok(contaService.consultarInfoConta(id));
+		} catch (ContaException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	// Issue #47 - PUT /banco/conta/transferencia
+	@PutMapping("/transferencia")
+	public ResponseEntity<String> transferencia(@RequestBody TransferenciaRequest req) {
+		try {
+			contaService.transferencia(req.getFrom(), req.getTo(), req.getAmount());
+			return ResponseEntity.ok(String.format("Transferencia de R$ %.2f da conta %d para %d realizada.",
+					req.getAmount(), req.getFrom(), req.getTo()));
 		} catch (ContaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
