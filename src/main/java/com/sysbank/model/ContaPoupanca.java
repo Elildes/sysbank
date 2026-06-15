@@ -6,8 +6,9 @@ package com.sysbank.model;
  */
 public class ContaPoupanca extends Conta {
 
-	public ContaPoupanca(int numero) {
-		super(numero);
+	// v3 Req 1 (#28): saldo inicial obrigatório
+	public ContaPoupanca(int numero, double saldoInicial) {
+		super(numero, saldoInicial);
 	}
 
 	/**

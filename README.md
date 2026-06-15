@@ -148,7 +148,7 @@ Este projeto prioriza:
 ```powershell
 # Na raiz do projeto
 mvn compile
-mvn exec:java -Dexec.mainClass="com.sysbank.Main"
+mvn exec:java -Dexec.mainClass="com.sysbank.Main_Old"
 ```
 
 ### Via Eclipse
@@ -156,7 +156,7 @@ mvn exec:java -Dexec.mainClass="com.sysbank.Main"
 1. `File → Import → Maven → Existing Maven Projects`
 2. Selecione a pasta raiz do projeto
 3. Botão direito no projeto → `Run As → Java Application`
-4. Selecione `com.sysbank.Main`
+4. Selecione `com.sysbank.Main_Old`
 
 ### Executar Testes
 
