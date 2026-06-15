@@ -10,7 +10,6 @@ public class Conta {
 		this.saldo = 0.0;
 	}
 
-	// Hotfix #30
 	public Conta(int numero, double saldoInicial) {
 		this.numero = numero;
 		this.saldo = saldoInicial;

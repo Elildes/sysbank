@@ -21,7 +21,7 @@ public class ContaController {
 		}
 	}
 
-	// v2 - mantido de staging
+	// v2
 	public String cadastrarContaBonus(int numero) {
 		try {
 			contaService.cadastrarContaBonus(numero);
@@ -31,11 +31,11 @@ public class ContaController {
 		}
 	}
 
-	// v2 - mantido de staging
-	public String cadastrarContaPoupanca(int numero) {
+	// v3 Req1 #28
+	public String cadastrarContaPoupanca(int numero, double saldoInicial) {
 		try {
-			contaService.cadastrarContaPoupanca(numero);
-			return "✔ Conta poupanca " + numero + " cadastrada. Saldo inicial: R$ 0,00";
+			contaService.cadastrarContaPoupanca(numero, saldoInicial);
+			return String.format("✔ Conta poupanca %d cadastrada. Saldo inicial: R$ %.2f", numero, saldoInicial);
 		} catch (ContaException e) {
 			return "✘ Erro: " + e.getMessage();
 		}
@@ -48,6 +48,15 @@ public class ContaController {
 			return "✘ Erro: " + e.getMessage();
 		}
 	}
+
+	// Issue #40 - Consultar dados da conta
+	public String consultarDadosConta(int numero) {
+		try {
+			return "✔ " + contaService.consultarInfoConta(numero);
+		} catch (ContaException e) {
+			return "✘ Erro: " + e.getMessage();
+		}
+	}	
 
 	public String credito(int numero, double valor) {
 		try {
@@ -82,7 +91,6 @@ public class ContaController {
 		}
 	}
 
-	// v2 - mantido de staging
 	public String renderJuros(double taxaPercentual) {
 		try {
 			contaService.renderJurosEmTodasPoupancas(taxaPercentual);
