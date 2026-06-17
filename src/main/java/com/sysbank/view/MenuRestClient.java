@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -86,7 +87,7 @@ public class MenuRestClient {
         System.out.println("--- Cadastrar Conta " + (tipo.equals("simples") ? "Simples" : "Poupanca") + " ---");
         int numero = lerInteiro("Numero da conta");
         double saldoInicial = lerDouble("Saldo inicial");
-        String body = String.format(
+        String body = String.format(Locale.US,
                 "{\"numero\":%d,\"tipo\":\"%s\",\"saldoInicial\":%.2f}",
                 numero, tipo, saldoInicial);
         System.out.println(post(BASE_URL + "/", body));
@@ -115,7 +116,7 @@ public class MenuRestClient {
         System.out.println("--- Credito em Conta ---");
         int numero = lerInteiro("Numero da conta");
         double valor = lerDouble("Valor do credito");
-        String body = String.format("{\"valor\":%.2f}", valor);
+        String body = String.format(Locale.US, "{\"valor\":%.2f}", valor);
         System.out.println(put(BASE_URL + "/" + numero + "/credito", body));
     }
 
@@ -123,7 +124,7 @@ public class MenuRestClient {
         System.out.println("--- Debito em Conta ---");
         int numero = lerInteiro("Numero da conta");
         double valor = lerDouble("Valor do debito");
-        String body = String.format("{\"valor\":%.2f}", valor);
+        String body = String.format(Locale.US, "{\"valor\":%.2f}", valor);
         System.out.println(put(BASE_URL + "/" + numero + "/debito", body));
     }
 
@@ -132,14 +133,14 @@ public class MenuRestClient {
         int origem = lerInteiro("Numero da conta de origem");
         int destino = lerInteiro("Numero da conta de destino");
         double valor = lerDouble("Valor da transferencia");
-        String body = String.format("{\"from\":%d,\"to\":%d,\"amount\":%.2f}", origem, destino, valor);
+        String body = String.format(Locale.US, "{\"from\":%d,\"to\":%d,\"amount\":%.2f}", origem, destino, valor);
         System.out.println(put(BASE_URL + "/transferencia", body));
     }
 
     private void fluxoRenderJuros() {
         System.out.println("--- Render Juros (todas as contas Poupanca) ---");
         double taxa = lerDouble("Taxa de juros (%)");
-        String body = String.format("{\"taxa\":%.2f}", taxa);
+        String body = String.format(Locale.US, "{\"taxa\":%.2f}", taxa);
         System.out.println(put(BASE_URL + "/rendimento", body));
     }
 
