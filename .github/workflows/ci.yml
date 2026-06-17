@@ -1,0 +1,49 @@
+name: CI - Sys Bank
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout do código
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      # 2. Configurar Java 17
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # 3. Resolver dependências e buildar
+      - name: Build do projeto
+        run: mvn clean compile --no-transfer-progress
+
+      # 4. Executar testes unitários
+      - name: Executar testes unitários
+        run: mvn test --no-transfer-progress
+
+      # 5. Criar tag build-XXX com timestamp
+      - name: Criar tag de build
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          TAG="build-${TIMESTAMP}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "CI build automatico: $TAG"
+          git push origin "$TAG"
+          echo "Tag criada: $TAG"
