@@ -1,0 +1,7 @@
+<FindBugsFilter>
+    <!-- DM_EXIT proposital: o cliente de terminal encerra a aplicacao Spring Boot ao sair do menu -->
+    <Match>
+        <Class name="com.sysbank.view.MenuRestClient"/>
+        <Bug pattern="DM_EXIT"/>
+    </Match>
+</FindBugsFilter>
