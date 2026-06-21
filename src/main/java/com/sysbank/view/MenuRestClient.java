@@ -11,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.util.Locale;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Cliente de terminal que consome a própria API REST via HTTP.
@@ -24,7 +25,7 @@ public class MenuRestClient {
     private static final String SEPARADOR = "=".repeat(50);
 
     private final HttpClient http = HttpClient.newHttpClient();
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
 
     @EventListener(ApplicationReadyEvent.class)
     public void iniciarEmThread() {
