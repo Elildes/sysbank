@@ -4,6 +4,7 @@ import com.sysbank.controller.ContaController;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
 
 public class MenuView {
 
@@ -14,7 +15,7 @@ public class MenuView {
 
 	public MenuView(ContaController controller) {
 		this.controller = controller;
-		this.scanner = new Scanner(System.in);
+		this.scanner = new Scanner(System.in, StandardCharsets.UTF_8);
 	}
 
 	public void iniciar() {
