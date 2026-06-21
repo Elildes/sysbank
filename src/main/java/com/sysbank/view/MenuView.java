@@ -43,7 +43,7 @@ public class MenuView {
 				executando = false;
 				System.out.println("Encerrando. Ate logo!");
 			}
-			default -> System.out.println("✘ Opcao invalida.");
+			default -> System.out.println("[!] Opcao invalida.");
 			}
 			System.out.println();
 		}
