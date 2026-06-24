@@ -166,6 +166,37 @@ mvn test
 
 ---
 
+## 🐳 Executar via Docker
+
+Imagem publicada no Docker Hub (apenas a API REST, na porta 8080):
+
+🔗 **Docker Hub:** https://hub.docker.com/r/manueljonas/sysbank
+
+```bash
+docker pull manueljonas/sysbank:latest
+docker run -p 8080:8080 manueljonas/sysbank:latest
+```
+
+A API fica disponível em `http://localhost:8080/banco/conta`.
+
+## 🔌 Endpoints da API REST
+
+| Operação | Método | Endpoint | Corpo (JSON) |
+|---|---|---|---|
+| Cadastrar conta | POST | `/banco/conta/` | `{"numero":1,"tipo":"simples","saldoInicial":500}` |
+| Consultar conta | GET | `/banco/conta/{id}` | — |
+| Consultar saldo | GET | `/banco/conta/{id}/saldo` | — |
+| Crédito | PUT | `/banco/conta/{id}/credito` | `{"valor":100}` |
+| Débito | PUT | `/banco/conta/{id}/debito` | `{"valor":50}` |
+| Transferência | PUT | `/banco/conta/transferencia` | `{"from":1,"to":2,"amount":50}` |
+| Render juros (todas poupanças) | PUT | `/banco/conta/rendimento` | `{"taxa":1}` |
+
+Exemplo:
+```bash
+curl -X POST http://localhost:8080/banco/conta/ -H "Content-Type: application/json" -d '{"numero":1,"tipo":"simples","saldoInicial":500}'
+curl http://localhost:8080/banco/conta/1
+```
+
 ## 📄 Licença
 
 Projeto desenvolvido para fins **educacionais/acadêmicos**.
