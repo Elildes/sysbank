@@ -66,7 +66,7 @@ public class MenuRestClient {
 				System.out.println("Encerrando. Ate logo!");
 				System.exit(0);
 			}
-			default -> System.out.println("✘ Opcao invalida.");
+			default -> System.out.println("[!] Opcao invalida.");
 			}
 			System.out.println();
 		}
