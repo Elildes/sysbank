@@ -1,0 +1,19 @@
+#!/bin/sh
+# Hook local 'commit-msg' (Tarefa 4 - DIM0517)
+# Recebe o arquivo da mensagem em $1, extrai o assunto e chama o validador.
+
+MSG_FILE="$1"
+GIT_DIR=$(git rev-parse --git-dir)
+
+# Nao valida commits de merge (mensagem automatica do Git)
+if [ -f "$GIT_DIR/MERGE_HEAD" ]; then
+  exit 0
+fi
+
+# Assunto = primeira linha nao-vazia que nao seja comentario (';')
+SUBJECT=$(grep -vE '^[[:space:]]*;' "$MSG_FILE" | grep -vE '^[[:space:]]*$' | head -n1)
+
+# Chama o validador na raiz do repositorio
+ROOT=$(git rev-parse --show-toplevel)
+sh "$ROOT/hooks/check-commit-msg.sh" "$SUBJECT"
+exit $?
