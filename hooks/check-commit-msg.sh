@@ -21,16 +21,20 @@ fi
 NUM=$(printf '%s' "$SUBJECT" | grep -oP '^#\K[0-9]+')
 
 # ----- Verificacao 2: a issue existe no GitHub -----
+# Le o codigo HTTP pelo cabecalho (-i), sem usar -w: a build do curl com
+# backend Schannel (Git for Windows) pode falhar no -w com "curl: (43)".
 API="https://api.github.com/repos/$REPO/issues/$NUM"
 if [ -n "${GITHUB_TOKEN:-}" ]; then
-  CODE=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GITHUB_TOKEN" "$API")
+  CODE=$(curl -sS -i --connect-timeout 10 -H "Authorization: Bearer $GITHUB_TOKEN" "$API" 2>/dev/null | grep -i '^HTTP/' | tail -n1 | grep -oE '[0-9]{3}' | head -n1)
 else
-  CODE=$(curl -s -o /dev/null -w '%{http_code}' "$API")
+  CODE=$(curl -sS -i --connect-timeout 10 "$API" 2>/dev/null | grep -i '^HTTP/' | tail -n1 | grep -oE '[0-9]{3}' | head -n1)
 fi
 
 case "$CODE" in
-  200) echo "[hook] OK: #$NUM e uma issue valida em $REPO."; exit 0 ;;
-  404) echo "[hook] ERRO: a issue #$NUM NAO existe em $REPO."; exit 1 ;;
-  403) echo "[hook] ERRO: limite da API do GitHub (HTTP 403). Defina GITHUB_TOKEN (60->5000/h)."; exit 1 ;;
-  *)   echo "[hook] ERRO: nao foi possivel verificar a issue #$NUM (HTTP $CODE)."; exit 1 ;;
+  200)     echo "[hook] OK: #$NUM e uma issue valida em $REPO."; exit 0 ;;
+  404)     echo "[hook] ERRO: a issue #$NUM NAO existe em $REPO."; exit 1 ;;
+  410)     echo "[hook] ERRO: a issue #$NUM foi DELETADA em $REPO (use uma issue ativa)."; exit 1 ;;
+  403)     echo "[hook] ERRO: limite da API do GitHub (HTTP 403). Defina GITHUB_TOKEN (60->5000/h)."; exit 1 ;;
+  000|"")  echo "[hook] ERRO: falha de conexao ao consultar a API (sem resposta)."; exit 1 ;;
+  *)       echo "[hook] ERRO: nao foi possivel verificar a issue #$NUM (HTTP $CODE)."; exit 1 ;;
 esac
