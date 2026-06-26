@@ -1,0 +1,44 @@
+name: Validacao de Commits (PR)
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validar-commits:
+    name: Validar mensagens dos commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (historico completo)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validar cada commit do PR
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -uo pipefail
+          chmod +x hooks/check-commit-msg.sh
+          FALHAS=0
+          for c in $(git rev-list --no-merges "$BASE_SHA..$HEAD_SHA"); do
+            SUBJECT=$(git log -1 --format=%s "$c")
+            echo "----------------------------------------"
+            echo "Commit $c"
+            echo "Assunto: $SUBJECT"
+            if ! bash hooks/check-commit-msg.sh "$SUBJECT"; then
+              FALHAS=$((FALHAS+1))
+            fi
+          done
+          echo "========================================"
+          if [ "$FALHAS" -gt 0 ]; then
+            echo "Reprovado: $FALHAS commit(s) fora do padrao."
+            exit 1
+          fi
+          echo "Aprovado: todos os commits do PR seguem o padrao."
