@@ -1,13 +1,14 @@
 package com.sysbank.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.sysbank.exception.ContaException;
 import com.sysbank.model.Conta;
 import com.sysbank.model.ContaBonus;
 import com.sysbank.model.ContaPoupanca;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ContaService {
@@ -78,7 +79,7 @@ public class ContaService {
 				throw new ContaException("Limite de saldo negativo excedido. Maximo permitido: R$ -1.000,00");
 			}
 		}
-		conta.setSaldo(conta.getSaldo() - valor);
+		conta.setSaldo(conta.getSaldo());
 	}
 
 	// v3 Req2 #29 - limite -1000 para Simples e Bônus
@@ -100,7 +101,7 @@ public class ContaService {
 			}
 		}
 
-		origem.setSaldo(origem.getSaldo());
+		origem.setSaldo(origem.getSaldo() - valor);
 		destino.setSaldo(destino.getSaldo() + valor);
 		if (destino instanceof ContaBonus cb) {
 			cb.adicionarPontuacaoTransferencia(valor);
