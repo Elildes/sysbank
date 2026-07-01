@@ -1,13 +1,14 @@
 package com.sysbank.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.sysbank.exception.ContaException;
 import com.sysbank.model.Conta;
 import com.sysbank.model.ContaBonus;
 import com.sysbank.model.ContaPoupanca;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ContaService {
