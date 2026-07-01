@@ -1,10 +1,10 @@
 package com.sysbank.view;
 
-import com.sysbank.controller.ContaController;
-
+import java.nio.charset.StandardCharsets;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.nio.charset.StandardCharsets;
+
+import com.sysbank.controller.ContaController;
 
 public class MenuView {
 
@@ -67,7 +67,7 @@ public class MenuView {
 	// Hotfix #30: solicita saldo inicial
 	private void fluxoCadastrarConta() {
 		System.out.println("--- Cadastrar Conta Simples ---");
-		int numero = lerInteiro("Numero da conta");
+		int numero = lerInteiro("Numero da conta:");
 		double saldoInicial = lerDouble("Saldo inicial");
 		System.out.println(controller.cadastrarConta(numero, saldoInicial));
 	}
