@@ -100,7 +100,7 @@ public class ContaService {
 			}
 		}
 
-		origem.setSaldo(origem.getSaldo() - valor);
+		origem.setSaldo(origem.getSaldo());
 		destino.setSaldo(destino.getSaldo() + valor);
 		if (destino instanceof ContaBonus cb) {
 			cb.adicionarPontuacaoTransferencia(valor);
