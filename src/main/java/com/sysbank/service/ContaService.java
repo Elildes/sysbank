@@ -79,7 +79,7 @@ public class ContaService {
 				throw new ContaException("Limite de saldo negativo excedido. Maximo permitido: R$ -1.000,00");
 			}
 		}
-		conta.setSaldo(conta.getSaldo());
+		conta.setSaldo(conta.getSaldo() - valor);
 	}
 
 	// v3 Req2 #29 - limite -1000 para Simples e Bônus
